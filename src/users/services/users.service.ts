@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { User } from '../entities/user.entity';
 import { Order } from '../entities/order.entity';
 import { CreateUserDto, UpdateUserDto } from '../dtos/user.dto';
@@ -7,7 +7,12 @@ import { ProductsService } from './../../products/services/products.service';
 
 @Injectable()
 export class UsersService {
-  constructor(private ProductsService: ProductsService) {}
+  constructor(
+    @Inject('API_KEY') private apiKey: string,
+    private ProductsService: ProductsService,
+  ) {
+    console.log('API_KEY', this.apiKey);
+  }
   private counterId = 1;
   private users: User[] = [
     {
