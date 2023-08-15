@@ -7,6 +7,7 @@ import { UsersModule } from './users/users.module';
 import { ProductsModule } from './products/products.module';
 import { DatabaseModule } from './database/database.module';
 import { AppService } from './app.service';
+import { enviroments } from './enviroments';
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { AppService } from './app.service';
     ProductsModule,
     DatabaseModule,
     ConfigModule.forRoot({
-      envFilePath: '.env',
+      envFilePath: enviroments[process.env.NODE_ENV] || '.env',
       isGlobal: true,
     }),
   ],
