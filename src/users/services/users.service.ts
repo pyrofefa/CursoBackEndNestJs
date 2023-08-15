@@ -1,18 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+
 import { User } from '../entities/user.entity';
 import { Order } from '../entities/order.entity';
 import { CreateUserDto, UpdateUserDto } from '../dtos/user.dto';
 import { ProductsService } from './../../products/services/products.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @Inject('API_KEY') private apiKey: string,
+    private configService: ConfigService,
     private ProductsService: ProductsService,
-  ) {
-    console.log('API_KEY', this.apiKey);
-  }
+  ) {}
   private counterId = 1;
   private users: User[] = [
     {
@@ -24,6 +24,9 @@ export class UsersService {
   ];
 
   findAll() {
+    const apiKey = this.configService.get('API_KEY');
+    const dbName = this.configService.get('DB_NAME');
+    console.log(apiKey);
     return this.users;
   }
 
