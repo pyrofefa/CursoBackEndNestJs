@@ -13,8 +13,8 @@ async function bootstrap() {
     }),
   );
   const config = new DocumentBuilder()
-    .setTitle('API')
-    .setDescription('Platzi Store')
+    .setTitle('SIAFEAPI')
+    .setDescription('SIMS')
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);
