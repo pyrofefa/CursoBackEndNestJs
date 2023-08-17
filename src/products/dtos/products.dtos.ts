@@ -24,6 +24,7 @@ export class CreateProductDto {
   @IsPositive()
   readonly price: number;
 
+  @ApiProperty()
   @IsNumber()
   @IsNotEmpty()
   @IsPositive()
