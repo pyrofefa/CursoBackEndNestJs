@@ -11,7 +11,6 @@ import { Client } from 'pg';
 @Injectable()
 export class UsersService {
   constructor(
-    @Inject('PG') private clienPg: Client,
     private configService: ConfigService,
     private ProductsService: ProductsService,
   ) {}
@@ -76,15 +75,5 @@ export class UsersService {
       user,
       products: await this.ProductsService.findAll(),
     };
-  }
-  getTasks() {
-    return new Promise((resolve, rejects) => {
-      this.clienPg.query('SELECT * FROM tasks', (err, res) => {
-        if (err) {
-          rejects(err);
-        }
-        resolve(res.rows);
-      });
-    });
   }
 }
