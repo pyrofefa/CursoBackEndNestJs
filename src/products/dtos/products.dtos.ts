@@ -30,6 +30,7 @@ export class CreateProductDto {
   @IsPositive()
   readonly stock: number;
 
+  @ApiProperty()
   @IsNotEmpty()
   @IsUrl()
   readonly image: string;
