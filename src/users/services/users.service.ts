@@ -1,28 +1,29 @@
-import { Injectable, NotFoundException, Inject } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
-import { Client } from 'pg';
-
 import { User } from '../entities/user.entity';
 import { CreateUserDto, UpdateUserDto } from '../dtos/user.dto';
 
 import { ProductsService } from './../../products/services/products.service';
+import { CustomersService } from './customers.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     private productsService: ProductsService,
     private configService: ConfigService,
-    @Inject('PG') private clientPg: Client,
     @InjectRepository(User) private userRepo: Repository<User>,
+    private customersService: CustomersService,
   ) {}
 
   findAll() {
     const apiKey = this.configService.get('API_KEY');
     const dbName = this.configService.get('DATABASE_NAME');
     console.log(apiKey, dbName);
-    return this.userRepo.find();
+    return this.userRepo.find({
+      relations: ['customer'],
+    });
   }
 
   async findOne(id: number) {
@@ -33,8 +34,12 @@ export class UsersService {
     return user;
   }
 
-  create(data: CreateUserDto) {
+  async create(data: CreateUserDto) {
     const newUser = this.userRepo.create(data);
+    if (data.customerId) {
+      const customer = await this.customersService.findOne(data.customerId);
+      newUser.customer = customer;
+    }
     return this.userRepo.save(newUser);
   }
 
@@ -55,16 +60,5 @@ export class UsersService {
       user,
       products: await this.productsService.findAll(),
     };
-  }
-
-  getTasks() {
-    return new Promise((resolve, reject) => {
-      this.clientPg.query('SELECT * FROM tasks', (err, res) => {
-        if (err) {
-          reject(err);
-        }
-        resolve(res.rows);
-      });
-    });
   }
 }
