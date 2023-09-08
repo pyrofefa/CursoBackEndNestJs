@@ -4,15 +4,15 @@ import { CreateProductDto, UpdateProductDto } from '../dtos/products.dtos';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { BrandsService } from './brands.service';
+import { Category } from '../entities/category.entity';
 
 @Injectable()
 export class ProductsService {
   constructor(
     @InjectRepository(Product) private productRepo: Repository<Product>,
     private brandsServices: BrandsService,
+    @InjectRepository(Category) private categoryRepo: Repository<Category>,
   ) {}
-
-  private counterId = 1;
 
   findAll() {
     return this.productRepo.find({
@@ -20,7 +20,12 @@ export class ProductsService {
     });
   }
   async findOne(id: number) {
-    const product = await this.productRepo.findOneBy({ id });
+    const product = await this.productRepo.findOne({
+      where: {
+        id: id,
+      },
+      relations: ['brand', 'categories'],
+    });
     if (!product) {
       throw new NotFoundException('Producto no existe');
     }
@@ -37,9 +42,13 @@ export class ProductsService {
     const newProduct = this.productRepo.create(data);
     if (data.brandId) {
       const brand = await this.brandsServices.findOne(data.brandId);
-      if (data.brandId) {
-      }
       newProduct.brand = brand;
+    }
+    if (data.categoriesIds) {
+      const categories = await this.categoryRepo.find({
+        where: data.categoriesIds.map((categoryId) => ({ id: categoryId })),
+      });
+      newProduct.categories = categories;
     }
     return this.productRepo.save(newProduct);
   }
