@@ -8,10 +8,9 @@ import {
   Put,
   HttpStatus,
   HttpCode,
-  //ParseIntPipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { ProductsService } from '../services/products.service';
-import { ParseIntPipe } from '../../common/parse-int/parse-int.pipe';
 import { CreateProductDto, UpdateProductDto } from '../dtos/products.dtos';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 
@@ -46,8 +45,24 @@ export class ProductsController {
     return this.productService.update(+id, payload);
   }
 
+  @Put(':id/category/:categoryId')
+  addCategoryToProduct(
+    @Param('id', ParseIntPipe) id: number,
+    @Param('categoryId', ParseIntPipe) categoryId: number,
+  ) {
+    return this.productService.addCategoryToProduct(id, categoryId);
+  }
+
   @Delete(':id')
   destroy(@Param('id') id: number) {
     return this.productService.remove(+id);
+  }
+
+  @Delete(':id/category/:categoryId')
+  deleteCategory(
+    @Param('id', ParseIntPipe) id: number,
+    @Param('categoryId', ParseIntPipe) categoryId: number,
+  ) {
+    return this.productService.removeCategoryByProduct(id, categoryId);
   }
 }

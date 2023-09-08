@@ -58,10 +58,38 @@ export class ProductsService {
     if (changes.brandId) {
       product.brand = brand;
     }
+    if (changes.categoriesIds) {
+      const categories = await this.categoryRepo.find({
+        where: changes.categoriesIds.map((categoryId) => ({ id: categoryId })),
+      });
+      product.categories = categories;
+    }
     this.productRepo.merge(product, changes);
     return this.productRepo.save(product);
   }
   remove(id: number) {
     return this.productRepo.delete(id);
+  }
+
+  async removeCategoryByProduct(productId: number, categoryId: number) {
+    const product = await this.productRepo.findOne({
+      where: { id: productId },
+      relations: ['categories'],
+    });
+    product.categories = product.categories.filter(
+      (item) => item.id !== categoryId,
+    );
+    return this.productRepo.save(product);
+  }
+  async addCategoryToProduct(productId: number, categoryId: number) {
+    const product = await this.productRepo.findOne({
+      where: { id: productId },
+      relations: ['categories'],
+    });
+    const category = await this.categoryRepo.findOne({
+      where: { id: categoryId },
+    });
+    product.categories.push(category);
+    return this.productRepo.save(product);
   }
 }
