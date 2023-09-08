@@ -9,9 +9,14 @@ import {
   HttpStatus,
   HttpCode,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { ProductsService } from '../services/products.service';
-import { CreateProductDto, UpdateProductDto } from '../dtos/products.dtos';
+import {
+  CreateProductDto,
+  FliterProductsDto,
+  UpdateProductDto,
+} from '../dtos/products.dtos';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 
 @ApiTags('Productos')
@@ -21,8 +26,8 @@ export class ProductsController {
 
   @ApiOperation({ summary: 'Obtener lista de productos.' })
   @Get()
-  getProducts() {
-    return this.productService.findAll();
+  getProducts(@Query() params: FliterProductsDto) {
+    return this.productService.findAll(params);
   }
 
   @Get('filter')

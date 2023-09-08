@@ -10,6 +10,9 @@ async function bootstrap() {
       whitelist: true, // Ignorar datos que no esten en los DTO
       forbidNonWhitelisted: true, // Lanzar error si existen datos prohibidos
       disableErrorMessages: false, // Desabilitar mensajes de error (producción)
+      transformOptions: {
+        enableImplicitConversion: true, //tranformar string numero en queryparams
+      },
     }),
   );
   const config = new DocumentBuilder()
