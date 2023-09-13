@@ -38,6 +38,6 @@ export class Customer {
   @OneToOne(() => User, (user) => user.customer, { nullable: true })
   user: User;
 
-  @OneToMany(() => Order, (order) => order.customer)
-  orders: Order[];
+  /*@OneToMany(() => Order, (order) => order.customer)
+  orders: Order[];*/
 }

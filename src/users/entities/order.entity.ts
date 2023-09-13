@@ -25,8 +25,8 @@ export class Order {
   })
   updateAt: Date;
 
-  @ManyToOne(() => Customer, (customer) => customer.orders)
-  customer: Customer;
+  /*@ManyToOne(() => Customer, (customer) => customer.orders)
+  customer: Customer;*/
 
   @OneToMany(() => OrderItem, (item) => item.order)
   items: OrderItem[];

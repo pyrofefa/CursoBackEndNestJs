@@ -6,7 +6,7 @@ import {
   UpdateProductDto,
 } from '../dtos/products.dtos';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Between, FindOptionsWhere, Repository } from 'typeorm';
 import { BrandsService } from './brands.service';
 import { Category } from '../entities/category.entity';
 
@@ -20,9 +20,16 @@ export class ProductsService {
 
   findAll(params?: FliterProductsDto) {
     if (params) {
+      const where: FindOptionsWhere<Product> = {};
       const { limit, offset } = params;
+      const { maxPrice, minPrice } = params;
+      if (minPrice && maxPrice) {
+        where.price = Between(minPrice, maxPrice);
+      }
+
       return this.productRepo.find({
         relations: ['brand'],
+        where,
         take: limit,
         skip: offset,
       });
