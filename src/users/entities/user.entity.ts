@@ -6,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
+import { Exclude } from 'class-transformer';
 import { Customer } from './customer.entity';
 
 @Entity()
@@ -22,12 +23,14 @@ export class User {
   @Column({ type: 'varchar', length: 100 })
   role: string;
 
+  @Exclude()
   @Column({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
   })
   createAt: Date;
 
+  @Exclude()
   @Column({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
