@@ -19,15 +19,17 @@ import {
   UpdateProductDto,
 } from '../dtos/products.dtos';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
-import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { Public } from 'src/auth/decorators/public.decorator';
 
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(JwtAuthGuard)
 @ApiTags('Productos')
 @Controller('products')
 export class ProductsController {
   constructor(private productService: ProductsService) {}
 
   @ApiOperation({ summary: 'Obtener lista de productos.' })
+  @Public()
   @Get()
   getProducts(@Query() params: FliterProductsDto) {
     return this.productService.findAll(params);
@@ -37,6 +39,8 @@ export class ProductsController {
   getProductFilter() {
     return `Yo soy un filter`;
   }
+
+  @Public()
   @Get(':id')
   @HttpCode(HttpStatus.ACCEPTED)
   getProduct(@Param('id', ParseIntPipe) id: number) {
